@@ -6,7 +6,7 @@ function UserTable(){
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-      fetch('http://127.0.0.1:8000/api/users')
+      fetch('https://backend-repo-iota.vercel.app/api/users/')
         .then(res => res.json())
         .then(res => setUsers(res))
         .catch(error => {

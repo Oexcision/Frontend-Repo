@@ -13,7 +13,7 @@ function UserForm(){
     function handleClickForm(e){
         e.preventDefault()
         console.log(textName,textPassword)
-        fetch('http://127.0.0.1:8000/api/users', {
+        fetch('https://backend-repo-iota.vercel.app/api/users/', {
             method:'POST',
             headers:{
                 'Content-type': 'application/json'
