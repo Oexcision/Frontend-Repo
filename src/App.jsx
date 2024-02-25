@@ -6,6 +6,9 @@ import UserCreate from "./pages/UserCreate";
 import Contact from "./pages/Contact";
 import NoPage from "./pages/NoPage";
 import UserDetails from "./pages/UserDetails";
+import UserEdit from "./pages/UserEdit";
+import UserDelete from "./pages/UserDelete";
+
 
 
 function App() {
@@ -13,7 +16,6 @@ function App() {
 
   return (
     <>
-
       <div className="container">
         <BrowserRouter>
           <Routes>
@@ -22,9 +24,11 @@ function App() {
                 <Route index element={<Home />} />
 
                 <Route path='users'>
-                  <Route path=":id" element={<UserDetails />} />
                   <Route path="list" element={<UserIndex />} />
                   <Route path="create" element={<UserCreate />} />
+                  <Route path="view/:id" element={<UserDetails />} />
+                  <Route path="edit/:id" element={<UserEdit />} />
+                  <Route path="delete/:id" element={<UserDelete/>} />
                 </Route>
 
                 <Route path="contact" element={<Contact />} />

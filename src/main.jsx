@@ -3,8 +3,14 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import Login from "./pages/Login";
+
+var authenticated = true
+
+
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    {authenticated ? <App />:<Login/>}
   </React.StrictMode>,
 )
