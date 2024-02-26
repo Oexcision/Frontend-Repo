@@ -7,9 +7,13 @@ function UserDetail(){
 
     const { id } = useParams();
 
+    const apiUrl = import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_REACT_APP_API_URL_PROD
+    : import.meta.env.VITE_REACT_APP_API_URL_DEV;
+
     useEffect(() => {
       // Realiza la solicitud GET a la API de FastAPI
-      fetch('http://127.0.0.1:8000/api/users/'+id)
+      fetch(apiUrl+'/users/'+id)
         .then(res => res.json())
         .then(res => setUser(res))
         .catch(error => {
