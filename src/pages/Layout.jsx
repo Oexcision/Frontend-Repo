@@ -1,12 +1,21 @@
-import { Outlet, Link } from "react-router-dom";
-
+import React from 'react';
+import { Outlet, Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import NavbarBrand from "react-bootstrap/esm/NavbarBrand";
+import { ToastContainer, toast } from 'react-toastify';
 
 const Layout = () => {
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn');
+    sessionStorage.removeItem('isNameUser');
+    toast.success('¡Has cerrado sesión exitosamente!');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  };
+
   return (
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
@@ -15,33 +24,24 @@ const Layout = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              {//<Nav.Link as={Link} to="users/create">Users</Nav.Link>
-              }
-              
-
               <NavDropdown title="Users" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to="/users/list">List Users</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/users/create" >Create Users</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/users/create">Create Users</NavDropdown.Item>
               </NavDropdown>
-
               <Nav.Link as={Link} to="/contact">Contact</Nav.Link>
-
-              <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-              </NavDropdown>
             </Nav>
+            <NavDropdown title="Settings" id="basic-nav-dropdown" className="custom-dropdown">
+              <NavDropdown.Item href="#action/3.1">User Settings</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+            </NavDropdown>
           </Navbar.Collapse>
         </Container>
       </Navbar>
-
-
       <Outlet />
+      <ToastContainer /> {/* Asegúrate de incluir el ToastContainer aquí */}
     </>
-  )
+  );
 };
 
 export default Layout;

@@ -29,12 +29,21 @@ function UserDetail(){
                         <th>ID</th>
                         <th>UserName</th>
                         <th>Password</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Disabled</th>
                         <th>Actions</th>
                     </tr>   
                 </thead>
                 <tbody>
                           
-                    <UserRow name = {user.name} password={user.password} id={user.id} key={user.id}/>
+                <UserRow username = {user.username} 
+                            hashed_password={user.hashed_password} 
+                            id={user.id} 
+                            name={user.name}
+                            email={user.email}
+                            disabled={user.disabled}
+                            key={user.id}/>
                     
                 </tbody>
 

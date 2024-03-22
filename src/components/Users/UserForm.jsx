@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 function UserForm(){
     const [ textName, setTextName] =  useState('')
     const [ textPassword, setTextPassword] =  useState('')
+
+    const navigate = useNavigate();
     
     const apiUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_REACT_APP_API_URL_PROD
@@ -25,12 +29,13 @@ function UserForm(){
                 'Content-type': 'application/json'
             },
             body: JSON.stringify({
-                name:textName,
-                password:textPassword
+                username:textName,
+                hashed_password:textPassword
             })
         }).then(() =>{
-            setTextName('')
-            setTextPassword('')
+            //setTextName('')
+            //setTextPassword('')
+            navigate('/users/list')
         })
 
     }

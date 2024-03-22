@@ -2,13 +2,17 @@ import { Link } from "react-router-dom"
 import Button from 'react-bootstrap/Button';
 
 
-function UserRow({ name, password, id }){
+function UserRow({ username, hashed_password, id, name, email, disabled }){
    
     return(
         <tr key = {id}>
             <td>{id}</td>
+            <td>{username}</td>
+            <td>{hashed_password}</td>
             <td>{name}</td>
-            <td>{password}</td>
+            <td>{email}</td>
+            <td>{disabled}</td>
+
             <td>
                 <Link to={`/users/view/${id}`}>
                     <Button variant="success" size="sm" id={id}>View</Button>
