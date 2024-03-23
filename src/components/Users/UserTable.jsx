@@ -39,28 +39,30 @@ function UserTable(){
     };
 
     return(
-        <>
+        <>  
+            
             <Table striped bordered hover variant="dark" responsive>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>UserName</th>
-                        <th>Password</th>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Disabled</th>
                         <th>Actions</th>
                     </tr>   
                 </thead>
                 <tbody>
                     {
                         currentItems.map(user=>(
-                        <UserRow username = {user.username} 
+                        <UserRow 
+                            username = {user.username} 
                             hashed_password={user.hashed_password} 
                             id={user.id} 
                             name={user.name}
                             email={user.email}
-                            disabled={user.disabled}
+                            created_at={user.created_at}
+                            updated_at={user.updated_at}
+                            deleted_at={user.deleted_at}
                             key={user.id}/>
                         ))
                     }

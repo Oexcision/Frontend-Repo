@@ -4,14 +4,21 @@ import Button from 'react-bootstrap/Button';
 import { ToastContainer, toast } from 'react-toastify';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [inputs, setInputs] = useState({});
+
   const [loginError, setLoginError] = useState(false);
 
   const apiUrl =
     import.meta.env.MODE === 'production'
       ? import.meta.env.VITE_REACT_APP_API_URL_PROD
       : import.meta.env.VITE_REACT_APP_API_URL_DEV;
+
+
+  const handleChange = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setInputs(values => ({...values, [name]: value}))
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,8 +30,8 @@ const Login = () => {
           'Content-type': 'application/json',
         },
         body: JSON.stringify({
-          username: username,
-          hashed_password: password,
+          username: inputs.username,
+          hashed_password: inputs.password,
         }),
       }).then((response) => {
 
@@ -63,8 +70,9 @@ const Login = () => {
           <Form.Control
             type="text"
             placeholder="Enter username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            name='username'
+            value={inputs.username || ""}
+            onChange={handleChange}
           />
         </Form.Group>
 
@@ -73,8 +81,9 @@ const Login = () => {
           <Form.Control
             type="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name='password'
+            value={inputs.password ||  ""}
+            onChange={handleChange}
           />
         </Form.Group>
 
