@@ -11,11 +11,6 @@ import NoPage from "./pages/NoPage";
 import Login from "./pages/Login";
 
 import UserIndex from "./pages/Users/UserIndex";
-import UserCreate from "./pages/Users/UserCreate";
-import UserDetails from "./pages/Users/UserDetails";
-import UserEdit from "./pages/Users/UserEdit";
-import UserDelete from "./pages/Users/UserDelete";
-
 
 
 function App() {
@@ -48,10 +43,6 @@ function App() {
 
                 <Route path='users'>
                   <Route path="list" element={<UserIndex />} />
-                  <Route path="create" element={<UserCreate />} />
-                  <Route path="view/:id" element={<UserDetails />} />
-                  <Route path="edit/:id" element={<UserEdit />} />
-                  <Route path="delete/:id" element={<UserDelete/>} />
                 </Route>
 
                 <Route path="contact" element={<Contact />} />

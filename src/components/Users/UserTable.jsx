@@ -1,22 +1,21 @@
-import UserRow from './UserRow'
 import { useEffect, useState } from 'react';
-import Table from 'react-bootstrap/Table'
-import Paginate from '../Paginate';
 
-function UserTable(){
-    const [users, setUsers] = useState([]);
+import Table from 'react-bootstrap/Table'
+
+import Paginate from '../Paginate';
+import UserRow from './UserRow'
+import UserModal from './UserModal';
+
+import { toast } from 'react-toastify';
+
+function UserTable({ users, fetchUsers }){
 
     const apiUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_REACT_APP_API_URL_PROD
     : import.meta.env.VITE_REACT_APP_API_URL_DEV;
 
     useEffect(() => {
-      fetch(apiUrl+'/users')
-        .then(res => res.json())
-        .then(res => setUsers(res))
-        .catch(error => {
-          console.error('Fetch error:', error);
-        });
+        fetchUsers();
     }, []);
 
 
@@ -38,6 +37,54 @@ function UserTable(){
       setCurrentPage(number);
     };
 
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [action, setAction] = useState('');
+
+    const handleView = (user) => {
+        setSelectedUser(user);
+        setAction('view');
+        setShowModal(true);
+      };
+    
+      const handleEdit = (user) => {
+        setSelectedUser(user);
+        setAction('edit');
+        setShowModal(true);
+      };
+    
+      const handleDelete = (userId) => {
+        fetch(apiUrl + `/users/${userId}`, { method: 'DELETE' })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to delete user');
+          }
+          toast.success('User deleted successfully');
+          fetchUsers();
+          // Puedes añadir lógica adicional aquí, como recargar la lista de usuarios
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          toast.error('Failed to delete user');
+        });
+      };
+
+      const handleRecover = (userId) => {
+        fetch(apiUrl + `/users/${userId}`, { method: 'POST' })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to recover user');
+          }
+          toast.success('User recover successfully');
+          fetchUsers();
+          // Puedes añadir lógica adicional aquí, como recargar la lista de usuarios
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          toast.error('Failed to recover user');
+        });
+      };
+
     return(
         <>  
             
@@ -52,22 +99,27 @@ function UserTable(){
                     </tr>   
                 </thead>
                 <tbody>
-                    {
+                    {   
                         currentItems.map(user=>(
                         <UserRow 
-                            username = {user.username} 
-                            hashed_password={user.hashed_password} 
-                            id={user.id} 
-                            name={user.name}
-                            email={user.email}
-                            created_at={user.created_at}
-                            updated_at={user.updated_at}
-                            deleted_at={user.deleted_at}
-                            key={user.id}/>
+                            key={user.id}
+                            user={user}
+                            onView={() => handleView(user)}
+                            onEdit={() => handleEdit(user)}
+                            onDelete={() => handleDelete(user.id)}
+                            onRecover={() => handleRecover(user.id)}
+                        />
                         ))
                     }
                 </tbody>
             </Table>
+            <UserModal
+                show={showModal}
+                user={selectedUser}
+                action={action}
+                fetchUsers={fetchUsers}
+                onHide={() => setShowModal(false)}
+            />
             <Paginate currentPage={currentPage} pageNumbers={pageNumbers} handleClick={handleClick} />
 
         </>

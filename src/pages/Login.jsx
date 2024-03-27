@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
+
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Image from 'react-bootstrap/Image';
+
+
 import { ToastContainer, toast } from 'react-toastify';
+
+import '../styles/login.css'
 
 const Login = () => {
   const [inputs, setInputs] = useState({});
@@ -64,37 +72,76 @@ const Login = () => {
   return (
     <>
       <ToastContainer />
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="formBasicEmail">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter username"
-            name='username'
-            value={inputs.username || ""}
-            onChange={handleChange}
-          />
-        </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            name='password'
-            value={inputs.password ||  ""}
-            onChange={handleChange}
-          />
-        </Form.Group>
+      <div className="centered-container">
 
-        {loginError && <p>Incorrect username or password.</p>}
+        <Row>
+          <h2>Login</h2>
+        </Row>
 
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
+        <Row>
+          <Image src="https://via.placeholder.com/200" roundedCircle />
+        </Row>
 
-        
-      </Form>
+        <Row>
+          <h4>Login with admin:admin</h4>
+        </Row>
+
+        <Row>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Username:</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter username"
+                name='username'
+                value={inputs.username || ""}
+                onChange={handleChange}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password:</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                name='password'
+                value={inputs.password ||  ""}
+                onChange={handleChange}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formBasicPassword">
+              <Form.Check
+                  type="checkbox"
+                  id="autoSizingCheck"
+                  className="mb-2"
+                  label="Remember me"
+                />
+            </Form.Group>
+
+            {loginError && <p>Incorrect username or password.</p>}
+
+            <Row>
+              <Col>
+              </Col>
+
+              <Col>
+                <Button variant="primary" type="submit">
+                  Login
+                </Button>
+              </Col>
+
+              <Col>
+              </Col>
+            </Row>
+
+          </Form>
+        </Row>
+
+      </div>
+      
+
     </>
   );
 };

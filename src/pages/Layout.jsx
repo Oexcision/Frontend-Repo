@@ -26,7 +26,6 @@ const Layout = () => {
             <Nav className="me-auto">
               <NavDropdown title="Users" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to="/users/list">List Users</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/users/create">Create Users</NavDropdown.Item>
               </NavDropdown>
               <Nav.Link as={Link} to="/contact">Contact</Nav.Link>
             </Nav>

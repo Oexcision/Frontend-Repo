@@ -4,10 +4,30 @@ import UserTable from '../../components/Users/UserTable';
 import UserCreateModal from '../../components/Users/UserCreateModal';
 
 const UserIndex = () => {
+
+    const [users, setUsers] = useState([]); 
+
     const [showCreateModal, setShowCreateModal] = useState(false);
 
     const handleCreateModalClose = () => setShowCreateModal(false);
     const handleCreateModalShow = () => setShowCreateModal(true);
+
+    // Función para actualizar los datos de la tabla
+    
+    const fetchUsers = () => {
+        const apiUrl =
+            import.meta.env.MODE === 'production'
+                ? import.meta.env.VITE_REACT_APP_API_URL_PROD
+                : import.meta.env.VITE_REACT_APP_API_URL_DEV;
+
+        fetch(apiUrl + '/users')
+            .then((res) => res.json())
+            .then((res) => setUsers(res))
+            .catch((error) => {
+                console.error('Fetch error:', error);
+            });
+    };
+    
 
 
     return (
@@ -25,9 +45,10 @@ const UserIndex = () => {
                 </Col>
             </Row>
 
-            <UserTable />
+            <UserTable users={users} fetchUsers={fetchUsers}/>
 
-            <UserCreateModal show={showCreateModal} handleClose={handleCreateModalClose} />
+            <UserCreateModal show={showCreateModal} handleClose={handleCreateModalClose} fetchUsers={fetchUsers} />
+
         </>
     );
 };

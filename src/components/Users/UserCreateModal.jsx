@@ -5,10 +5,10 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Badge from 'react-bootstrap/Badge';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 
-function UserCreateModal({ show, handleClose }) {
+function UserCreateModal({ show, handleClose, fetchUsers }) {
 
     const [ inputs, setInputs] =  useState({})
 
@@ -27,46 +27,38 @@ function UserCreateModal({ show, handleClose }) {
     function handleSubmit(e){
         e.preventDefault();
 
-        toast.promise(
-            fetch(apiUrl+`/users`, {
-                method: 'POST',
-                headers:{
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: inputs.username,
-                    hashed_password: inputs.password,
-                    name: inputs.name,
-                    email:inputs.email,
-                }),
-
-            }).then((response)=>{
-                if(response.ok){
-                    return response.json();
-                } else {
-                    throw new Error ('Network response was not ok')
-                }
-            }).then((data) =>{
-                console.log(data.id,data.username,data.hashed_password,data.name,data.username);
-            }).catch((error) => {
-                return Promise.reject(error);
+        fetch(apiUrl+`/users`, {
+            method: 'POST',
+            headers:{
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: inputs.username,
+                hashed_password: inputs.password,
+                name: inputs.name,
+                email:inputs.email,
             }),
-            {
-                pending: 'Enviando solicitud...',
-                success: () => '¡Inicio de sesión exitoso!',
-                error: () => 'Hubo un error al iniciar sesión.',
+
+        }).then((response)=>{
+            if(response.ok){
+                handleClose();
+                toast.success('User Create successfully');
+                fetchUsers();
+                return response.json();
+            } else {
+                throw new Error ('Network response was not ok')
             }
+        }).then((data) =>{
+            console.log(data.id,data.username,data.hashed_password,data.name,data.username);
+        }).catch((error) => {
+            toast.error('Failed to create user');
+            return Promise.reject(error);
+        })
             
-        ).then(() =>{
-            handleClose();
-            setTimeout(() => {
-                window.location.reload();
-              }, 3000);
-        });
+        
     }
     return (
         <>
-            <ToastContainer />
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Create User</Modal.Title>
