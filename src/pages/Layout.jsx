@@ -18,26 +18,31 @@ const Layout = () => {
 
   return (
     <>
-      <Navbar expand="lg" className="bg-body-tertiary">
-        <Container>
-          <Navbar.Brand as={Link} to="/">SHOP</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <NavDropdown title="Users" id="basic-nav-dropdown">
-                <NavDropdown.Item as={Link} to="/users/list">List Users</NavDropdown.Item>
+      <Container>
+        <Navbar expand="lg" className="bg-body-tertiary">
+            <Navbar.Brand as={Link} to="/">SHOP</Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="me-auto">
+                <NavDropdown title="Users" id="basic-nav-dropdown">
+                  <NavDropdown.Item as={Link} to="/users/list">List Users</NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown title="Permissions" id="basic-nav-dropdown">
+                  <NavDropdown.Item as={Link} to="/permissions/list">List Permissions</NavDropdown.Item>
+                </NavDropdown>
+                <Nav.Link as={Link} to="/contact">Contact</Nav.Link>
+              </Nav>
+              <NavDropdown title="Settings" id="basic-nav-dropdown" className="custom-dropdown">
+                <NavDropdown.Item href="#action/3.1">User Settings</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
               </NavDropdown>
-              <Nav.Link as={Link} to="/contact">Contact</Nav.Link>
-            </Nav>
-            <NavDropdown title="Settings" id="basic-nav-dropdown" className="custom-dropdown">
-              <NavDropdown.Item href="#action/3.1">User Settings</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
-            </NavDropdown>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-      <Outlet />
+            </Navbar.Collapse>
+        </Navbar>
+      </Container>
+      <Container>
+        <Outlet />
+      </Container>
       <ToastContainer /> {/* Asegúrate de incluir el ToastContainer aquí */}
     </>
   );

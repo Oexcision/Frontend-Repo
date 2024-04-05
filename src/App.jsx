@@ -11,6 +11,7 @@ import NoPage from "./pages/NoPage";
 import Login from "./pages/Login";
 
 import UserIndex from "./pages/Users/UserIndex";
+import PermissionIndex from "./pages/Permissions/PermissionIndex";
 
 
 function App() {
@@ -32,7 +33,6 @@ function App() {
 
   return (
     <>
-       <Container>
         <BrowserRouter>
           <Routes>
             {
@@ -43,6 +43,11 @@ function App() {
 
                 <Route path='users'>
                   <Route path="list" element={<UserIndex />} />
+                </Route>
+
+                
+                <Route path='permissions'>
+                  <Route path="list" element={<PermissionIndex/>} />
                 </Route>
 
                 <Route path="contact" element={<Contact />} />
@@ -60,7 +65,6 @@ function App() {
           </Routes>
             
         </BrowserRouter>
-        </Container>
     </>
   );
 }
