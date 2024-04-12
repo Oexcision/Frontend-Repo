@@ -27,6 +27,9 @@ const Layout = () => {
                 <NavDropdown title="Users" id="basic-nav-dropdown">
                   <NavDropdown.Item as={Link} to="/users/list">List Users</NavDropdown.Item>
                 </NavDropdown>
+                <NavDropdown title="Roles" id="basic-nav-dropdown">
+                  <NavDropdown.Item as={Link} to="/roles/list">List Roles</NavDropdown.Item>
+                </NavDropdown>
                 <NavDropdown title="Permissions" id="basic-nav-dropdown">
                   <NavDropdown.Item as={Link} to="/permissions/list">List Permissions</NavDropdown.Item>
                 </NavDropdown>

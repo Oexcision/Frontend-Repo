@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 
 import UserIndex from "./pages/Users/UserIndex";
 import PermissionIndex from "./pages/Permissions/PermissionIndex";
+import RolesIndex from "./pages/Roles/RolesIndex";
 
 
 function App() {
@@ -45,7 +46,10 @@ function App() {
                   <Route path="list" element={<UserIndex />} />
                 </Route>
 
-                
+                <Route path='roles'>
+                  <Route path="list" element={<RolesIndex/>} />
+                </Route>
+
                 <Route path='permissions'>
                   <Route path="list" element={<PermissionIndex/>} />
                 </Route>

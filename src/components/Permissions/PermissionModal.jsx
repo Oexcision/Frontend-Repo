@@ -22,7 +22,7 @@ const PermissionModal = ({ show, permission, action, fetchPermissions, onHide })
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setUserDetails(prevState => ({
+        setPermissionDetails(prevState => ({
             ...prevState,
             [name]: value
         }));
