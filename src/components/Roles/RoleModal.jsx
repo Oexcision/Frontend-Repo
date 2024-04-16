@@ -33,8 +33,11 @@ const RoleModal = ({ show, role, action, fetchRoles, onHide }) => {
     };
 
     useEffect(() => {
-        fetchPermissions();
+        if (permissions.length === 0) {
+            fetchPermissions();
+        }
     }, []);
+    
     
     useEffect(() => {
         if (role && role.permissions) { // Verificar si role y role.permissions no son nulos
@@ -109,14 +112,14 @@ const RoleModal = ({ show, role, action, fetchRoles, onHide }) => {
 
     const dividePermissionsIntoRows = () => {
         const permissionsArray = Object.entries(groupPermissionsByPrefix());
-        const rows = [];
-
-        for (let i = 0; i < permissionsArray.length; i += 3) {
-            rows.push(permissionsArray.slice(i, i + 3));
-        }
-
-        return rows;
+        return permissionsArray.reduce((rows, _, index) => {
+            if (index % 3 === 0) {
+                rows.push(permissionsArray.slice(index, index + 3));
+            }
+            return rows;
+        }, []);
     };
+    
 
     return (
         <Modal show={show} onHide={onHide} size='xl'>

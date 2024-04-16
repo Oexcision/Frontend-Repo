@@ -36,6 +36,7 @@ const PermissionModal = ({ show, permission, action, fetchPermissions, onHide })
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                id: permissionDetails.id,
                 name: permissionDetails.name,
                 description: permissionDetails.description,
 
@@ -98,7 +99,8 @@ const PermissionModal = ({ show, permission, action, fetchPermissions, onHide })
                 name="createdAt"
                 onChange={handleChange}
                 value={permissionDetails?.created_at || ""} 
-                readOnly/>
+                readOnly
+                disabled/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="updatedAt">
                 <Form.Label>Updated at</Form.Label>
@@ -108,7 +110,8 @@ const PermissionModal = ({ show, permission, action, fetchPermissions, onHide })
                 name="updatedAt"
                 onChange={handleChange}
                 value={permissionDetails?.updated_at || ""} 
-                readOnly/>
+                readOnly
+                disabled/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="deletedAt">
                 <Form.Label>Deleted at</Form.Label>
@@ -118,7 +121,8 @@ const PermissionModal = ({ show, permission, action, fetchPermissions, onHide })
                 name="deletedAt"
                 onChange={handleChange}
                 value={permissionDetails?.deleted_at || ""} 
-                readOnly/>
+                readOnly
+                disabled/>
             </Form.Group>
         </Form>
         
@@ -132,7 +136,8 @@ const PermissionModal = ({ show, permission, action, fetchPermissions, onHide })
                     placeholder="Enter Name" 
                     name="name"
                     value={permission?.name || ""}
-                    readOnly />
+                    readOnly
+                    disabled/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="description">
                     <Form.Label>Description</Form.Label>
@@ -141,7 +146,8 @@ const PermissionModal = ({ show, permission, action, fetchPermissions, onHide })
                     placeholder="Enter Description" 
                     name="description"
                     value={permission?.description || ""}
-                    readOnly />
+                    readOnly
+                    disabled/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="createdAt">
                     <Form.Label>Created at</Form.Label>
@@ -150,7 +156,8 @@ const PermissionModal = ({ show, permission, action, fetchPermissions, onHide })
                     placeholder="Enter createdAt" 
                     name="createdAt"
                     value={permission?.created_at || ""} 
-                    readOnly/>
+                    readOnly
+                    disabled/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="updatedAt">
                     <Form.Label>Updated at</Form.Label>
@@ -159,7 +166,8 @@ const PermissionModal = ({ show, permission, action, fetchPermissions, onHide })
                     placeholder="Enter updatedAt" 
                     name="updatedAt"
                     value={permission?.updated_at || ""} 
-                    readOnly/>
+                    readOnly
+                    disabled/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="deletedAt">
                     <Form.Label>Deleted at</Form.Label>
@@ -168,7 +176,8 @@ const PermissionModal = ({ show, permission, action, fetchPermissions, onHide })
                     placeholder="Enter deletedAt" 
                     name="deletedAt"
                     value={permission?.deleted_at || ""} 
-                    readOnly/>
+                    readOnly
+                    disabled/>
                 </Form.Group>
             </Form>
         )}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -11,11 +11,29 @@ import { toast } from 'react-toastify';
 function UserCreateModal({ show, handleClose, fetchUsers }) {
 
     const [ inputs, setInputs] =  useState({})
+    const [roles,setRoles] = useState([]);
+    const [selectedValue, setSelectedValue] = useState('');
 
     const apiUrl =
     import.meta.env.MODE === 'production'
       ? import.meta.env.VITE_REACT_APP_API_URL_PROD
       : import.meta.env.VITE_REACT_APP_API_URL_DEV;
+
+    
+    const fetchRoles = () =>{
+        fetch(apiUrl + '/roles')
+        .then((res) => res.json())
+        .then((res) => setRoles(res))
+        .catch((error) => {
+            console.error('Fetch error:', error);
+        });
+    }
+
+    useEffect(() => {
+        if (roles.length === 0) {
+            fetchRoles();
+        }
+    }, []);
 
     const handleChange = (event) => {
         const name = event.target.name;
@@ -23,10 +41,13 @@ function UserCreateModal({ show, handleClose, fetchUsers }) {
         setInputs(values => ({...values, [name]:value}))
     }
 
+    const handleChangeSelect = (event) => {
+        setSelectedValue(event.target.value);
+      };
+
 
     function handleSubmit(e){
         e.preventDefault();
-
         fetch(apiUrl+`/users`, {
             method: 'POST',
             headers:{
@@ -37,6 +58,7 @@ function UserCreateModal({ show, handleClose, fetchUsers }) {
                 hashed_password: inputs.password,
                 name: inputs.name,
                 email:inputs.email,
+                roles: [parseInt(selectedValue)]
             }),
 
         }).then((response)=>{
@@ -86,6 +108,17 @@ function UserCreateModal({ show, handleClose, fetchUsers }) {
                             name="password"
                             onChange={handleChange} 
                             value={inputs.password || ""} />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="role">
+                            <Form.Label> Role 
+                                {" "}<Badge bg="danger"> * </Badge>
+                            </Form.Label>
+                            <Form.Control as="select" name="role" value={selectedValue} onChange={handleChangeSelect}>
+                                <option value="" disabled>Seleccione el Rol</option>
+                                {roles.map((role) => (
+                                    <option key={role.id} value={role.id}>{role.description}</option>
+                                ))}
+                            </Form.Control>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="name">
                             <Form.Label>Name</Form.Label>

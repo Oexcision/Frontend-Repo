@@ -8,18 +8,41 @@ import { toast } from 'react-toastify';
 
 const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
 
-    const[userDetails,setUserDetails]= useState(user);
+    const [userDetails, setUserDetails] = useState(user);
     const [password,setPassword] = useState('');
-
-    useEffect(() => {
-        setUserDetails(user);
-    }, [user]);
-
+    const [roles,setRoles] = useState([]);
+    const [selectedValue, setSelectedValue] = useState('');
 
     const apiUrl =
     import.meta.env.MODE === 'production'
       ? import.meta.env.VITE_REACT_APP_API_URL_PROD
       : import.meta.env.VITE_REACT_APP_API_URL_DEV;
+
+    useEffect(() => {
+        setUserDetails(user);
+    }, [user]);
+
+    const fetchRoles = () =>{
+        fetch(apiUrl + '/roles')
+        .then((res) => res.json())
+        .then((res) => setRoles(res))
+        .catch((error) => {
+            console.error('Fetch error:', error);
+        });
+    }
+
+    useEffect(() => {
+        if (roles.length === 0) {
+            fetchRoles();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (userDetails && userDetails.roles && userDetails.roles.length > 0) {
+            setSelectedValue(userDetails.roles[0].id);
+        }
+    }, [userDetails]);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,21 +52,28 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
         }));
     };
 
+
     const handleChangePassword = (e) =>{
         setPassword(e.target.value)
     }
 
+    const handleChangeSelect = (event) => {
+        setSelectedValue(event.target.value);
+      };
+
     const handleSubmit = (e) =>{
         e.preventDefault()
-        console.log(user.id,userDetails.username,password)
+        console.log(user.id,userDetails.username,password,)
         const requestOptions = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                id:userDetails.id,
                 username: userDetails.username,
                 hashed_password: password,
                 name: userDetails.name,
                 email: userDetails.email,
+                roles: [parseInt(selectedValue)]
 
               })
         };
@@ -86,7 +116,8 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                 name="username"
                 onChange={handleChange}
                 value={userDetails?.username || ""}
-                readOnly/>
+                readOnly
+                disabled/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
                 <Form.Label> Password 
@@ -99,6 +130,17 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                 onChange={handleChangePassword}
                 value={password || ""} 
                 />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="role">
+                <Form.Label> Role 
+                    {" "}<Badge bg="danger"> * </Badge>
+                </Form.Label>
+                <Form.Control as="select" name="role" value={selectedValue} onChange={handleChangeSelect}>
+                    <option disabled>Seleccione el Rol</option>
+                    {roles.map((role) => (
+                        <option key={role.id} value={role.id}>{role.description}</option>   
+                    ))}
+                </Form.Control>
             </Form.Group>
             <Form.Group className="mb-3" controlId="name">
                 <Form.Label>Name</Form.Label>
@@ -128,7 +170,8 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                 name="createdAt"
                 onChange={handleChange}
                 value={userDetails?.created_at || ""} 
-                readOnly/>
+                readOnly
+                disabled/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="updatedAt">
                 <Form.Label>Updated at</Form.Label>
@@ -138,7 +181,8 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                 name="updatedAt"
                 onChange={handleChange}
                 value={userDetails?.updated_at || ""} 
-                readOnly/>
+                readOnly
+                disabled/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="deletedAt">
                 <Form.Label>Deleted at</Form.Label>
@@ -148,7 +192,8 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                 name="deletedAt"
                 onChange={handleChange}
                 value={userDetails?.deleted_at || ""} 
-                readOnly/>
+                readOnly
+                disabled/>
             </Form.Group>
         </Form>
         
@@ -164,7 +209,8 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                     placeholder="Enter Username" 
                     name="username"
                     value={user?.username || ""}
-                    readOnly/>
+                    readOnly
+                    disabled/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="password">
                     <Form.Label> Password 
@@ -175,8 +221,20 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                     placeholder="Enter Password" 
                     name="password"
                     value={user?.hashed_password || ""} 
-                    readOnly/>
+                    readOnly
+                    disabled/>
                 </Form.Group>
+                <Form.Group className="mb-3" controlId="role">
+                    <Form.Label> Role 
+                        {" "}<Badge bg="danger"> * </Badge>
+                    </Form.Label>
+                <Form.Control as="select" name="role" value={selectedValue} onChange={handleChangeSelect} disabled>
+                    <option disabled>Seleccione el Rol</option>
+                    {roles.map((role) => (
+                        <option key={role.id} value={role.id}>{role.description}</option>   
+                    ))}
+                </Form.Control>
+            </Form.Group>
                 <Form.Group className="mb-3" controlId="name">
                     <Form.Label>Name</Form.Label>
                     <Form.Control 
@@ -184,7 +242,8 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                     placeholder="Enter Name" 
                     name="name"
                     value={user?.name || ""}
-                    readOnly />
+                    readOnly
+                    disabled/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="email">
                     <Form.Label>Email</Form.Label>
@@ -193,7 +252,8 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                     placeholder="Enter Email" 
                     name="email"
                     value={user?.email || ""} 
-                    readOnly/>
+                    readOnly
+                    disabled/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="createdAt">
                     <Form.Label>Created at</Form.Label>
@@ -202,7 +262,8 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                     placeholder="Enter createdAt" 
                     name="createdAt"
                     value={user?.created_at || ""} 
-                    readOnly/>
+                    readOnly
+                    disabled/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="updatedAt">
                     <Form.Label>Updated at</Form.Label>
@@ -211,7 +272,8 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                     placeholder="Enter updatedAt" 
                     name="updatedAt"
                     value={user?.updated_at || ""} 
-                    readOnly/>
+                    readOnly
+                    disabled/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="deletedAt">
                     <Form.Label>Deleted at</Form.Label>
@@ -220,7 +282,8 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                     placeholder="Enter deletedAt" 
                     name="deletedAt"
                     value={user?.deleted_at || ""} 
-                    readOnly/>
+                    readOnly
+                    disabled/>
                 </Form.Group>
             </Form>
         )}
