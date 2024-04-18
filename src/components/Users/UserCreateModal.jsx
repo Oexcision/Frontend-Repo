@@ -5,29 +5,20 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Badge from 'react-bootstrap/Badge';
 
-import { toast } from 'react-toastify';
+import axios from 'axios';
 
+import { toast } from 'react-toastify';
 
 function UserCreateModal({ show, handleClose, fetchUsers }) {
 
-    const [ inputs, setInputs] =  useState({})
-    const [roles,setRoles] = useState([]);
+    const [inputs, setInputs] = useState({});
+    const [roles, setRoles] = useState([]);
     const [selectedValue, setSelectedValue] = useState('');
 
     const apiUrl =
-    import.meta.env.MODE === 'production'
-      ? import.meta.env.VITE_REACT_APP_API_URL_PROD
-      : import.meta.env.VITE_REACT_APP_API_URL_DEV;
-
-    
-    const fetchRoles = () =>{
-        fetch(apiUrl + '/roles')
-        .then((res) => res.json())
-        .then((res) => setRoles(res))
-        .catch((error) => {
-            console.error('Fetch error:', error);
-        });
-    }
+        import.meta.env.MODE === 'production'
+            ? import.meta.env.VITE_REACT_APP_API_URL_PROD
+            : import.meta.env.VITE_REACT_APP_API_URL_DEV;
 
     useEffect(() => {
         if (roles.length === 0) {
@@ -35,50 +26,50 @@ function UserCreateModal({ show, handleClose, fetchUsers }) {
         }
     }, []);
 
+    const fetchRoles = () => {
+        axios.get(apiUrl + '/roles')
+            .then((res) => setRoles(res.data))
+            .catch((error) => {
+                console.error('Fetch error:', error);
+            });
+    }
+
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        setInputs(values => ({...values, [name]:value}))
+        setInputs(values => ({ ...values, [name]: value }))
     }
 
     const handleChangeSelect = (event) => {
         setSelectedValue(event.target.value);
-      };
+    };
 
-
-    function handleSubmit(e){
+    function handleSubmit(e) {
         e.preventDefault();
-        fetch(apiUrl+`/users`, {
-            method: 'POST',
-            headers:{
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: inputs.username,
-                hashed_password: inputs.password,
-                name: inputs.name,
-                email:inputs.email,
-                roles: [parseInt(selectedValue)]
-            }),
-
-        }).then((response)=>{
-            if(response.ok){
-                handleClose();
-                toast.success('User Create successfully');
-                fetchUsers();
-                return response.json();
-            } else {
-                throw new Error ('Network response was not ok')
-            }
-        }).then((data) =>{
-            console.log(data.id,data.username,data.hashed_password,data.name,data.username);
-        }).catch((error) => {
-            toast.error('Failed to create user');
-            return Promise.reject(error);
+        axios.post(apiUrl + '/users', {
+            username: inputs.username,
+            hashed_password: inputs.password,
+            name: inputs.name,
+            email: inputs.email,
+            roles: [parseInt(selectedValue)]
         })
-            
-        
+            .then((response) => {
+                if (response.status === 200) {
+                    handleClose();
+                    toast.success('User Create successfully');
+                    fetchUsers();
+                    return response.data;
+                } else {
+                    throw new Error('Network response was not ok')
+                }
+            }).then((data) => {
+                console.log(data.id, data.username, data.hashed_password, data.name, data.username);
+            }).catch((error) => {
+                toast.error('Failed to create user');
+                return Promise.reject(error);
+            })
     }
+
     return (
         <>
             <Modal show={show} onHide={handleClose}>
@@ -91,26 +82,26 @@ function UserCreateModal({ show, handleClose, fetchUsers }) {
                             <Form.Label> Name
                                 {" "}<Badge bg="danger"> * </Badge>
                             </Form.Label>
-                            <Form.Control 
-                            type="text" 
-                            placeholder="Enter Username" 
-                            name="username"
-                            onChange={handleChange} 
-                            value={inputs.username || ""}/>
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter Username"
+                                name="username"
+                                onChange={handleChange}
+                                value={inputs.username || ""} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="password">
-                            <Form.Label> Password 
+                            <Form.Label> Password
                                 {" "}<Badge bg="danger"> * </Badge>
                             </Form.Label>
-                            <Form.Control 
-                            type="password" 
-                            placeholder="Enter Password" 
-                            name="password"
-                            onChange={handleChange} 
-                            value={inputs.password || ""} />
+                            <Form.Control
+                                type="password"
+                                placeholder="Enter Password"
+                                name="password"
+                                onChange={handleChange}
+                                value={inputs.password || ""} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="role">
-                            <Form.Label> Role 
+                            <Form.Label> Role
                                 {" "}<Badge bg="danger"> * </Badge>
                             </Form.Label>
                             <Form.Control as="select" name="role" value={selectedValue} onChange={handleChangeSelect}>
@@ -122,21 +113,21 @@ function UserCreateModal({ show, handleClose, fetchUsers }) {
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="name">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control 
-                            type="text" 
-                            placeholder="Enter Name" 
-                            name="name"
-                            onChange={handleChange} 
-                            value={inputs.name || ""} />
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter Name"
+                                name="name"
+                                onChange={handleChange}
+                                value={inputs.name || ""} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="email">
                             <Form.Label>Email</Form.Label>
-                            <Form.Control 
-                            type="email" 
-                            placeholder="Enter Email" 
-                            name="email"
-                            onChange={handleChange} 
-                            value={inputs.email || ""} />
+                            <Form.Control
+                                type="email"
+                                placeholder="Enter Email"
+                                name="email"
+                                onChange={handleChange}
+                                value={inputs.email || ""} />
                         </Form.Group>
                     </Form>
                 </Modal.Body>

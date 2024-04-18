@@ -1,16 +1,14 @@
 import { useState } from "react";
-
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Badge from 'react-bootstrap/Badge';
-
+import axios from 'axios';
 import { toast } from 'react-toastify';
-
 
 function PermissionCreateModal({ show, handleClose, fetchPermissions }) {
 
-    const [ inputs, setInputs] =  useState({})
+    const [inputs, setInputs] = useState({});
 
     const apiUrl =
     import.meta.env.MODE === 'production'
@@ -20,41 +18,36 @@ function PermissionCreateModal({ show, handleClose, fetchPermissions }) {
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        setInputs(values => ({...values, [name]:value}))
-    }
-
+        setInputs(values => ({...values, [name]:value}));
+    };
 
     function handleSubmit(e){
         e.preventDefault();
 
-        fetch(apiUrl+`/permissions`, {
-            method: 'POST',
-            headers:{
+        axios.post(`${apiUrl}/permissions`, {
+            name: inputs.name,
+            description: inputs.description,
+        }, {
+            headers: {
                 'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: inputs.name,
-                description: inputs.description,
-            }),
-
+            }
         }).then((response)=>{
-            if(response.ok){
+            if(response.status === 200){
                 handleClose();
-                toast.success('Permission Create successfully');
+                toast.success('Permission created successfully');
                 fetchPermissions();
-                return response.json();
+                return response.data;
             } else {
-                throw new Error ('Network response was not ok')
+                throw new Error ('Network response was not ok');
             }
         }).then((data) =>{
-            console.log(data.id,data.name,data.description);
+            console.log(data.id, data.name, data.description);
         }).catch((error) => {
+            console.error('Error:', error);
             toast.error('Failed to create permission');
-            return Promise.reject(error);
-        })
-            
-        
+        });
     }
+
     return (
         <>
             <Modal show={show} onHide={handleClose}>

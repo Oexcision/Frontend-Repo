@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, 
-        Button, 
-        Form, 
-        Badge,
-        Container,
-        Row,
-        Col } from 'react-bootstrap';
-        
+import { Modal, Button, Form, Badge, Container, Row, Col } from 'react-bootstrap';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const RoleModal = ({ show, role, action, fetchRoles, onHide }) => {
@@ -14,8 +8,7 @@ const RoleModal = ({ show, role, action, fetchRoles, onHide }) => {
     const [permissions, setPermissions] = useState([]);
     const [activePermissions, setActivePermissions] = useState([]);
 
-    const apiUrl =
-    import.meta.env.MODE === 'production'
+    const apiUrl = import.meta.env.MODE === 'production'
         ? import.meta.env.VITE_REACT_APP_API_URL_PROD
         : import.meta.env.VITE_REACT_APP_API_URL_DEV;
 
@@ -23,29 +16,26 @@ const RoleModal = ({ show, role, action, fetchRoles, onHide }) => {
         setRoleDetails(role);
     }, [role]);
 
-    const fetchPermissions = () => {
-        fetch(apiUrl + '/permissions')
-            .then((res) => res.json())
-            .then((res) => setPermissions(res))
-            .catch((error) => {
-                console.error('Fetch error:', error);
-            });
-    };
-
     useEffect(() => {
+        const fetchPermissions = async () => {
+            try {
+                const response = await axios.get(`${apiUrl}/permissions`);
+                setPermissions(response.data);
+            } catch (error) {
+                console.error('Fetch error:', error);
+            }
+        };
+
         if (permissions.length === 0) {
             fetchPermissions();
         }
     }, []);
-    
-    
+
     useEffect(() => {
-        if (role && role.permissions) { // Verificar si role y role.permissions no son nulos
+        if (role && role.permissions) {
             setActivePermissions(role.permissions.map(permission => permission.id));
         }
     }, [role]);
-    
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -58,43 +48,31 @@ const RoleModal = ({ show, role, action, fetchRoles, onHide }) => {
     const handleChangeChecks = (e) => {
         const { id, checked } = e.target;
         if (checked) {
-            setActivePermissions(prevPermissions => [...prevPermissions, parseInt(id)]); // Agregar el id del permiso activo
+            setActivePermissions(prevPermissions => [...prevPermissions, parseInt(id)]);
         } else {
-            setActivePermissions(prevPermissions => prevPermissions.filter(permissionId => permissionId !== parseInt(id))); // Eliminar el id del permiso activo
+            setActivePermissions(prevPermissions => prevPermissions.filter(permissionId => permissionId !== parseInt(id)));
         }
     };
-    
-    
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(roleDetails.id, roleDetails.name, roleDetails.description, roleDetails.permissions, activePermissions);
-        const requestOptions = {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+        try {
+            const response = await axios.put(`${apiUrl}/roles/${role.id}`, {
                 id: roleDetails.id,
                 name: roleDetails.name,
                 description: roleDetails.description,
                 permissions: activePermissions
-            }),
-        };
-
-        fetch(apiUrl + `/roles/${role.id}`, requestOptions)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to save changes');
-                }
-                onHide();
-                toast.success('Role edit successfully');
-                fetchRoles();
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                toast.error('Failed to edit role');
             });
+            if (response.status === 200) {
+                onHide();
+                toast.success('Role edited successfully');
+                fetchRoles();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('Failed to edit role');
+        }
     };
-
 
     const groupPermissionsByPrefix = () => {
         const groupedPermissions = {};
@@ -119,7 +97,6 @@ const RoleModal = ({ show, role, action, fetchRoles, onHide }) => {
             return rows;
         }, []);
     };
-    
 
     return (
         <Modal show={show} onHide={onHide} size='xl'>
@@ -168,7 +145,7 @@ const RoleModal = ({ show, role, action, fetchRoles, onHide }) => {
                                                     label={permission.description}
                                                     id={permission.id.toString()}
                                                     onChange={handleChangeChecks}
-                                                    checked={activePermissions.includes(permission.id)} // Verifica si algÃºn permiso seleccionado coincide con el ID del permiso actual
+                                                    checked={activePermissions.includes(permission.id)}
                                                 />
                                             ))}
                                         </Col>
@@ -220,7 +197,7 @@ const RoleModal = ({ show, role, action, fetchRoles, onHide }) => {
                                                     label={permission.description}
                                                     id={permission.id.toString()}
                                                     onChange={handleChangeChecks}
-                                                    checked={activePermissions.includes(permission.id)} // Verifica si algÃºn permiso seleccionado coincide con el ID del permiso actual
+                                                    checked={activePermissions.includes(permission.id)}
                                                     disabled
                                                 />
                                             ))}

@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Button } from 'react-bootstrap';
+import axios from 'axios';
+
 import RoleCreateModal from '../../components/Roles/RoleCreateModal';
 import RoleTable from '../../components/Roles/RoleTable';
 
-
-
 function RolesIndex(){
-
     const [roles, setRoles] = useState([]); 
-
     const [showCreateModal, setShowCreateModal] = useState(false);
 
     const handleCreateModalClose = () => setShowCreateModal(false);
     const handleCreateModalShow = () => setShowCreateModal(true);
+
+    useEffect(() => {
+        fetchRoles();
+    }, []); // Fetch Roles when the component mounts
 
     const fetchRoles = () => {
         const apiUrl =
@@ -20,9 +22,8 @@ function RolesIndex(){
                 ? import.meta.env.VITE_REACT_APP_API_URL_PROD
                 : import.meta.env.VITE_REACT_APP_API_URL_DEV;
 
-        fetch(apiUrl + '/roles')
-            .then((res) => res.json())
-            .then((res) => setRoles(res))
+        axios.get(apiUrl + '/roles')
+            .then((res) => setRoles(res.data))
             .catch((error) => {
                 console.error('Fetch error:', error);
             });
@@ -46,9 +47,8 @@ function RolesIndex(){
             <RoleTable roles={roles} fetchRoles={fetchRoles}/>
 
             <RoleCreateModal show={showCreateModal} handleClose={handleCreateModalClose} fetchRoles={fetchRoles} />
-        
         </>
-    )
+    );
+};
 
-}
 export default RolesIndex;

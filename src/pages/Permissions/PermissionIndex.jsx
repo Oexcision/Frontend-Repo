@@ -1,34 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Button } from 'react-bootstrap';
+import axios from 'axios';
+
 import PermissionTable from '../../components/Permissions/PermissionTable';
 import PermissionCreateModal from '../../components/Permissions/PermissionCreateModal';
 
 const PermissionIndex = () => {
-
     const [permissions, setPermissions] = useState([]); 
-
     const [showCreateModal, setShowCreateModal] = useState(false);
 
     const handleCreateModalClose = () => setShowCreateModal(false);
     const handleCreateModalShow = () => setShowCreateModal(true);
 
-    // Función para actualizar los datos de la tabla
-    
+    useEffect(() => {
+        fetchPermissions();
+    }, []); // Fetch Permissions when the component mounts
+
     const fetchPermissions = () => {
         const apiUrl =
             import.meta.env.MODE === 'production'
                 ? import.meta.env.VITE_REACT_APP_API_URL_PROD
                 : import.meta.env.VITE_REACT_APP_API_URL_DEV;
 
-        fetch(apiUrl + '/permissions')
-            .then((res) => res.json())
-            .then((res) => setPermissions(res))
+        axios.get(apiUrl + '/permissions')
+            .then((res) => setPermissions(res.data))
             .catch((error) => {
                 console.error('Fetch error:', error);
             });
     };
-    
-
 
     return (
         <>

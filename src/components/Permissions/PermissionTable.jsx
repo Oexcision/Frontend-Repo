@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
-
-import Table from 'react-bootstrap/Table'
-
+import React, { useEffect, useState } from 'react';
+import Table from 'react-bootstrap/Table';
 import Paginate from '../Paginate';
-import PermissionRow from './PermissionRow'
+import PermissionRow from './PermissionRow';
 import PermissionModal from './PermissionModal';
-
+import axios from 'axios';
 import { toast } from 'react-toastify';
 
 function PermissionTable({ permissions, fetchPermissions }){
@@ -18,21 +16,18 @@ function PermissionTable({ permissions, fetchPermissions }){
         fetchPermissions();
     }, []);
 
-
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10); // número de elementos por página
-  
-    // Calcular índices de los elementos a mostrar en la página actual
+    const [itemsPerPage] = useState(10);
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = permissions.slice(indexOfFirstItem, indexOfLastItem);
-  
-    // Calcular números de página
+
     const pageNumbers = [];
     for (let i = 1; i <= Math.ceil(permissions.length / itemsPerPage); i++) {
       pageNumbers.push(i);
     }
-  
+
     const handleClick = (number) => {
       setCurrentPage(number);
     };
@@ -47,67 +42,66 @@ function PermissionTable({ permissions, fetchPermissions }){
         setShowModal(true);
       };
     
-      const handleEdit = (permission) => {
+    const handleEdit = (permission) => {
         setSelectedPermission(permission);
         setAction('edit');
         setShowModal(true);
-      };
+    };
     
-      const handleDelete = (permissionId) => {
-        fetch(apiUrl + `/permissions/${permissionId}`, { method: 'DELETE' })
+    const handleDelete = (permissionId) => {
+        axios.delete(`${apiUrl}/permissions/${permissionId}`)
         .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to delete permission');
-          }
-          toast.success('Permission deleted successfully');
-          fetchPermissions();
-          // Puedes añadir lógica adicional aquí, como recargar la lista de usuarios
+            if (response.status === 200) {
+                toast.success('Permission deleted successfully');
+                fetchPermissions();
+            } else {
+                throw new Error('Failed to delete permission');
+            }
         })
         .catch(error => {
-          console.error('Error:', error);
-          toast.error('Failed to delete permission');
+            console.error('Error:', error);
+            toast.error('Failed to delete permission');
         });
-      };
+    };
 
-      const handleRecover = (permissionId) => {
-        fetch(apiUrl + `/permissions/${permissionId}`, { method: 'POST' })
+    const handleRecover = (permissionId) => {
+        axios.post(`${apiUrl}/permissions/${permissionId}`)
         .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to recover permission');
-          }
-          toast.success('Permission recover successfully');
-          fetchPermissions();
-          // Puedes añadir lógica adicional aquí, como recargar la lista de usuarios
+            if (response.status === 200) {
+                toast.success('Permission recovered successfully');
+                fetchPermissions();
+            } else {
+                throw new Error('Failed to recover permission');
+            }
         })
         .catch(error => {
-          console.error('Error:', error);
-          toast.error('Failed to recover permission');
+            console.error('Error:', error);
+            toast.error('Failed to recover permission');
         });
-      };
+    };
 
-    return(
+    return (
         <>  
-            
             <Table striped bordered hover variant="dark" responsive>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
                         <th>Description</th>
-                        <th>Acciones</th>
+                        <th>Actions</th>
                     </tr>   
                 </thead>
                 <tbody>
                     {   
-                        currentItems.map(permission=>(
-                        <PermissionRow 
-                            key={permission.id}
-                            permission={permission}
-                            onView={() => handleView(permission)}
-                            onEdit={() => handleEdit(permission)}
-                            onDelete={() => handleDelete(permission.id)}
-                            onRecover={() => handleRecover(permission.id)}
-                        />
+                        currentItems.map(permission => (
+                            <PermissionRow 
+                                key={permission.id}
+                                permission={permission}
+                                onView={() => handleView(permission)}
+                                onEdit={() => handleEdit(permission)}
+                                onDelete={() => handleDelete(permission.id)}
+                                onRecover={() => handleRecover(permission.id)}
+                            />
                         ))
                     }
                 </tbody>
@@ -120,9 +114,8 @@ function PermissionTable({ permissions, fetchPermissions }){
                 onHide={() => setShowModal(false)}
             />
             <Paginate currentPage={currentPage} pageNumbers={pageNumbers} handleClick={handleClick} />
-
         </>
-
-    )
+    );
 }
+
 export default PermissionTable;
