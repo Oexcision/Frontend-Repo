@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
 import axios from 'axios';
 
 import RoleCreateModal from '../../components/Roles/RoleCreateModal';
 import RoleTable from '../../components/Roles/RoleTable';
+import HeaderIndex from '../../components/HeaderIndex';
+
+import { useAuthentication } from '../../contexts/AuthContext';
 
 function RolesIndex(){
+
+    const { permissionsOfUser } = useAuthentication();
+
     const [roles, setRoles] = useState([]); 
     const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -31,22 +36,21 @@ function RolesIndex(){
 
     return(
         <>
-            <h1>Index Roles</h1>
+            <HeaderIndex 
+                nameIndex={"Roles"} 
+                nameButton={"Role"} 
+                handleCreateModalShow={handleCreateModalShow}
+                permissionCreate={permissionsOfUser && permissionsOfUser.some(p => p.name === 'role_create')?true:false}/>
 
-            <Row className="mb-3">
-                <Col xs={8}>
-                    <h2>List Roles</h2>
-                </Col>
-                <Col xs={4} className="text-end">
-                    <Button variant="primary" onClick={handleCreateModalShow}>
-                        Create Role
-                    </Button>
-                </Col>
-            </Row>
+            <RoleTable 
+                roles={roles} 
+                fetchRoles={fetchRoles}
+                permissionsOfUser={permissionsOfUser}/>
 
-            <RoleTable roles={roles} fetchRoles={fetchRoles}/>
-
-            <RoleCreateModal show={showCreateModal} handleClose={handleCreateModalClose} fetchRoles={fetchRoles} />
+            <RoleCreateModal 
+                show={showCreateModal} 
+                handleClose={handleCreateModalClose} 
+                fetchRoles={fetchRoles} />
         </>
     );
 };

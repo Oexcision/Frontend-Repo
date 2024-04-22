@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
-const PermissionRow = ({ permission, onView, onEdit, onDelete, onRecover }) => {
+const PermissionRow = ({ permission, onView, onEdit, onDelete, onRecover, permissionsOfUser }) => {
   return (
     <tr>
       <td>{permission.id}</td>
@@ -9,9 +9,17 @@ const PermissionRow = ({ permission, onView, onEdit, onDelete, onRecover }) => {
       <td>{permission.description}</td>
       <td>
         <Button variant="primary" onClick={onView}>View</Button>{' '}
-        <Button variant="warning" onClick={onEdit}>Edit</Button>{' '}
-        {!permission.deleted_at &&<Button variant="danger" onClick={onDelete}>Delete</Button>}
-        {permission.deleted_at && <Button variant="success" onClick={onRecover}>Recover</Button>}
+
+        {permissionsOfUser && permissionsOfUser.some(p => p.name === 'permission_edit') && 
+        <Button variant="warning" onClick={onEdit}>Edit</Button>}{' '}
+
+        {!permission.deleted_at && 
+        permissionsOfUser && permissionsOfUser.some(p => p.name === 'permission_delete') &&
+         <Button variant="danger" onClick={onDelete}>Delete</Button>}
+
+        {permission.deleted_at && 
+        permissionsOfUser && permissionsOfUser.some(p => p.name === 'permission_recover') && 
+        <Button variant="success" onClick={onRecover}>Recover</Button>}
         
 
       </td>

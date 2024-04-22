@@ -6,7 +6,7 @@ import PermissionModal from './PermissionModal';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-function PermissionTable({ permissions, fetchPermissions }){
+function PermissionTable({ permissions, fetchPermissions, permissionsOfUser }){
 
     const apiUrl = import.meta.env.MODE === 'production'
     ? import.meta.env.VITE_REACT_APP_API_URL_PROD
@@ -101,6 +101,8 @@ function PermissionTable({ permissions, fetchPermissions }){
                                 onEdit={() => handleEdit(permission)}
                                 onDelete={() => handleDelete(permission.id)}
                                 onRecover={() => handleRecover(permission.id)}
+                                permissionsOfUser={permissionsOfUser}
+                                
                             />
                         ))
                     }

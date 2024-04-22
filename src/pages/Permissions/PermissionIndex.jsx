@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
 import axios from 'axios';
 
 import PermissionTable from '../../components/Permissions/PermissionTable';
 import PermissionCreateModal from '../../components/Permissions/PermissionCreateModal';
+import HeaderIndex from '../../components/HeaderIndex';
+
+import { useAuthentication } from '../../contexts/AuthContext';
 
 const PermissionIndex = () => {
+
+    const { permissionsOfUser } = useAuthentication();
+
     const [permissions, setPermissions] = useState([]); 
     const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -31,22 +36,21 @@ const PermissionIndex = () => {
 
     return (
         <>
-            <h1>Index Permissions</h1>
+            <HeaderIndex 
+                nameIndex={"Permissions"} 
+                nameButton={"Permission"} 
+                handleCreateModalShow={handleCreateModalShow}
+                permissionCreate={permissionsOfUser && permissionsOfUser.some(p => p.name === 'permission_create')?true:false}/>
 
-            <Row className="mb-3">
-                <Col xs={8}>
-                    <h2>List Permissions</h2>
-                </Col>
-                <Col xs={4} className="text-end">
-                    <Button variant="primary" onClick={handleCreateModalShow}>
-                        Create Permission
-                    </Button>
-                </Col>
-            </Row>
+            <PermissionTable 
+                permissions={permissions} 
+                fetchPermissions={fetchPermissions}
+                permissionsOfUser={permissionsOfUser}/>
 
-            <PermissionTable permissions={permissions} fetchPermissions={fetchPermissions}/>
-
-            <PermissionCreateModal show={showCreateModal} handleClose={handleCreateModalClose} fetchPermissions={fetchPermissions} />
+            <PermissionCreateModal 
+                show={showCreateModal} 
+                handleClose={handleCreateModalClose} 
+                fetchPermissions={fetchPermissions} />
 
         </>
     );

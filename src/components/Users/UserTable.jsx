@@ -10,7 +10,7 @@ import axios from 'axios';
 
 import { toast } from 'react-toastify';
 
-function UserTable({ users, fetchUsers }) {
+function UserTable({ users, fetchUsers, permissionsOfUser }) {
 
     const apiUrl = import.meta.env.MODE === 'production'
         ? import.meta.env.VITE_REACT_APP_API_URL_PROD
@@ -109,6 +109,7 @@ function UserTable({ users, fetchUsers }) {
                                 onEdit={() => handleEdit(user)}
                                 onDelete={() => handleDelete(user.id)}
                                 onRecover={() => handleRecover(user.id)}
+                                permissionsOfUser = { permissionsOfUser }
                             />
                         ))
                     }

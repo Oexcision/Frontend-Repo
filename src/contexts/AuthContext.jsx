@@ -7,7 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const [permissions, setPermissions] = useState(null);
+  const [permissionsOfUser, setPermissionsOfUser] = useState(null);
 
   const apiUrl =
     import.meta.env.MODE === 'production'
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
       setTimeout(() => {
         setIsLoggedIn(true);
         setUser( response.data );
-        setPermissions( response.data.roles[0].permissions );
+        setPermissionsOfUser( response.data.roles[0].permissions );
         //console.log(response.data.roles[0].permissions);
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("user", JSON.stringify( response.data ));
@@ -58,8 +58,8 @@ export const AuthProvider = ({ children }) => {
         const response = await axios.get(`${apiUrl}/users/${user.id}`, {
 
         });
-        console.log(response.data.roles[0].permissions);
-        setPermissions( response.data.roles[0].permissions );
+        //console.log(response.data.roles[0].permissions);
+        setPermissionsOfUser( response.data.roles[0].permissions );
     }
     catch (error) {
         console.error("Error al iniciar sesión:", error);
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout, permissions, refreshPermissions }}>
+    <AuthContext.Provider value={{ isLoggedIn, user, login, logout, permissionsOfUser, refreshPermissions }}>
       {children}
     </AuthContext.Provider>
   );

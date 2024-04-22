@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
 import axios from 'axios';
 
 import UserTable from '../../components/Users/UserTable';
 import UserCreateModal from '../../components/Users/UserCreateModal';
+import HeaderIndex from '../../components/HeaderIndex';
+
+import { useAuthentication } from '../../contexts/AuthContext';
 
 const UserIndex = () => {
+
+    const { permissionsOfUser } = useAuthentication();
+
     const [users, setUsers] = useState([]); 
     const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -30,23 +35,24 @@ const UserIndex = () => {
     };
 
     return (
-        <>
-            <h1>Index Users</h1>
+        <>  
+            <HeaderIndex 
+                nameIndex={"Users"} 
+                nameButton={"User"} 
+                handleCreateModalShow={handleCreateModalShow} 
+                permissionCreate={permissionsOfUser && permissionsOfUser.some(p => p.name === 'user_create')?true:false}/>
 
-            <Row className="mb-3">
-                <Col xs={8}>
-                    <h2>List Users</h2>
-                </Col>
-                <Col xs={4} className="text-end">
-                    <Button variant="primary" onClick={handleCreateModalShow}>
-                        Create User
-                    </Button>
-                </Col>
-            </Row>
+            {permissionsOfUser && permissionsOfUser.some(p => p.name === 'user_view') && (
+            <UserTable 
+                users={users} 
+                fetchUsers={fetchUsers} 
+                permissionsOfUser={permissionsOfUser}/>
+            )}
 
-            <UserTable users={users} fetchUsers={fetchUsers}/>
-
-            <UserCreateModal show={showCreateModal} handleClose={handleCreateModalClose} fetchUsers={fetchUsers} />
+            <UserCreateModal 
+                show={showCreateModal} 
+                handleClose={handleCreateModalClose} 
+                fetchUsers={fetchUsers} />
         </>
     );
 };

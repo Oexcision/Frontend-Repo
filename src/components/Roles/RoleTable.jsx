@@ -10,7 +10,7 @@ import axios from 'axios';
 
 import { toast } from 'react-toastify';
 
-function RoleTable({ roles, fetchRoles }) {
+function RoleTable({ roles, fetchRoles, permissionsOfUser }) {
     const apiUrl = import.meta.env.MODE === 'production'
         ? import.meta.env.VITE_REACT_APP_API_URL_PROD
         : import.meta.env.VITE_REACT_APP_API_URL_DEV;
@@ -96,6 +96,7 @@ function RoleTable({ roles, fetchRoles }) {
                                 onEdit={() => handleEdit(role)}
                                 onDelete={() => handleDelete(role.id)}
                                 onRecover={() => handleRecover(role.id)}
+                                permissionsOfUser={permissionsOfUser}
                             />
                         ))
                     }
