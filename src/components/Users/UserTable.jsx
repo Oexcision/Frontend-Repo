@@ -15,11 +15,11 @@ function UserTable({ users, fetchUsers, permissionsOfUser }) {
     const apiUrl = import.meta.env.MODE === 'production'
         ? import.meta.env.VITE_REACT_APP_API_URL_PROD
         : import.meta.env.VITE_REACT_APP_API_URL_DEV;
-
+    /*
     useEffect(() => {
         fetchUsers();
     }, []);
-
+    */
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10); // número de elementos por página
@@ -56,7 +56,11 @@ function UserTable({ users, fetchUsers, permissionsOfUser }) {
     };
 
     const handleDelete = (userId) => {
-        axios.delete(apiUrl + `/users/${userId}`)
+        axios.delete(apiUrl + `/users/${userId}`, {
+            headers: {
+              Authorization: localStorage.getItem("token_type") + " " + localStorage.getItem("access_token")
+            }
+           })
             .then(response => {
                 if (response.status === 200) {
                     toast.success('User deleted successfully');
@@ -72,7 +76,11 @@ function UserTable({ users, fetchUsers, permissionsOfUser }) {
     };
 
     const handleRecover = (userId) => {
-        axios.post(apiUrl + `/users/${userId}`)
+        axios.post(apiUrl + `/users/${userId}`, {}, {
+            headers: {
+              Authorization: localStorage.getItem("token_type") + " " + localStorage.getItem("access_token")
+            }
+           })
             .then(response => {
                 if (response.status === 200) {
                     toast.success('User recover successfully');

@@ -52,7 +52,11 @@ function UserCreateModal({ show, handleClose, fetchUsers }) {
             name: inputs.name,
             email: inputs.email,
             roles: [parseInt(selectedValue)]
-        })
+        },{
+            headers: {
+              Authorization: localStorage.getItem("token_type") + " " + localStorage.getItem("access_token")
+            }
+           })
             .then((response) => {
                 if (response.status === 200) {
                     handleClose();

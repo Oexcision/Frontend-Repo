@@ -7,6 +7,8 @@ import HeaderIndex from '../../components/HeaderIndex';
 
 import { useAuthentication } from '../../contexts/AuthContext';
 
+import DataTable from '../../components/DataTable';
+
 const UserIndex = () => {
 
     const { permissionsOfUser } = useAuthentication();
@@ -27,7 +29,11 @@ const UserIndex = () => {
                 ? import.meta.env.VITE_REACT_APP_API_URL_PROD
                 : import.meta.env.VITE_REACT_APP_API_URL_DEV;
 
-        axios.get(apiUrl + '/users')
+        axios.get(apiUrl + '/users',{
+            headers: {
+              Authorization: localStorage.getItem("token_type") + " " + localStorage.getItem("access_token")
+            }
+           })
             .then((res) => setUsers(res.data))
             .catch((error) => {
                 console.error('Fetch error:', error);

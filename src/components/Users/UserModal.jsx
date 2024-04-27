@@ -62,7 +62,8 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
         console.log(user.id, userDetails.username, password,)
         const requestOptions = {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {  'Content-Type': 'application/json', 
+                        'Authorization': localStorage.getItem("token_type") + " " + localStorage.getItem("access_token") },
             body: JSON.stringify({
                 id: userDetails.id,
                 username: userDetails.username,
