@@ -9,6 +9,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import './index.css'
 
+import 'chart.js/auto';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>

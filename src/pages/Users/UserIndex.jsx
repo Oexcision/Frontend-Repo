@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import UserTable from '../../components/Users/UserTable';
 import UserCreateModal from '../../components/Users/UserCreateModal';
 import HeaderIndex from '../../components/HeaderIndex';
+import DataTable from '../../components/DataTable';
 
 import { useAuthentication } from '../../contexts/AuthContext';
-
-import DataTable from '../../components/DataTable';
 
 const UserIndex = () => {
 
@@ -40,6 +38,12 @@ const UserIndex = () => {
             });
     };
 
+    const columnsOfTable = [{id:1, name:"id", description:"ID"},
+                            {id:2, name:"username", description:"Username"},
+                            {id:3, name:"name", description:"Name"},
+                            {id:4, name:"email", description:"Email"},
+                            {id:5, name:"birthday", description:"Birthday"}]
+
     return (
         <>  
             <HeaderIndex 
@@ -49,11 +53,14 @@ const UserIndex = () => {
                 permissionCreate={permissionsOfUser && permissionsOfUser.some(p => p.name === 'user_create')?true:false}/>
 
             {permissionsOfUser && permissionsOfUser.some(p => p.name === 'user_view') && (
-            <UserTable 
-                users={users} 
-                fetchUsers={fetchUsers} 
-                permissionsOfUser={permissionsOfUser}/>
+                <DataTable 
+                    columns={columnsOfTable} 
+                    data={users} 
+                    entity={{single:"User",plural:"users"}} 
+                    fetchData={fetchUsers}
+                    permissionsOfUser={permissionsOfUser}/>
             )}
+
 
             <UserCreateModal 
                 show={showCreateModal} 

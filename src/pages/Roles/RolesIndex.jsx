@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import RoleCreateModal from '../../components/Roles/RoleCreateModal';
-import RoleTable from '../../components/Roles/RoleTable';
 import HeaderIndex from '../../components/HeaderIndex';
+import DataTable from '../../components/DataTable';
 
 import { useAuthentication } from '../../contexts/AuthContext';
 
@@ -34,6 +34,10 @@ function RolesIndex(){
             });
     };
 
+    const columnsOfTable = [{id:1, name:"id", description:"ID"},
+                            {id:2, name:"name", description:"Name"},
+                            {id:3, name:"description", description:"Description"}]
+
     return(
         <>
             <HeaderIndex 
@@ -42,9 +46,11 @@ function RolesIndex(){
                 handleCreateModalShow={handleCreateModalShow}
                 permissionCreate={permissionsOfUser && permissionsOfUser.some(p => p.name === 'role_create')?true:false}/>
 
-            <RoleTable 
-                roles={roles} 
-                fetchRoles={fetchRoles}
+            <DataTable
+                columns={columnsOfTable} 
+                data={roles} 
+                entity={{single:"Role",plural:"roles"}} 
+                fetchData={fetchRoles}
                 permissionsOfUser={permissionsOfUser}/>
 
             <RoleCreateModal 

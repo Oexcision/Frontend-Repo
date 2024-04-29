@@ -46,11 +46,13 @@ function UserCreateModal({ show, handleClose, fetchUsers }) {
 
     function handleSubmit(e) {
         e.preventDefault();
+        console.log(inputs.birthday)
         axios.post(apiUrl + '/users', {
             username: inputs.username,
             hashed_password: inputs.password,
             name: inputs.name,
             email: inputs.email,
+            birthday: inputs.birthday,
             roles: [parseInt(selectedValue)]
         },{
             headers: {
@@ -83,7 +85,7 @@ function UserCreateModal({ show, handleClose, fetchUsers }) {
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3" controlId="Username">
-                            <Form.Label> Name
+                            <Form.Label> Username
                                 {" "}<Badge bg="danger"> * </Badge>
                             </Form.Label>
                             <Form.Control
@@ -132,6 +134,14 @@ function UserCreateModal({ show, handleClose, fetchUsers }) {
                                 name="email"
                                 onChange={handleChange}
                                 value={inputs.email || ""} />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="birthday">
+                            <Form.Label>Birthday</Form.Label>
+                            <Form.Control
+                                type="date"
+                                name="birthday"
+                                onChange={handleChange}
+                                value={inputs.birthday || ""} />
                         </Form.Group>
                     </Form>
                 </Modal.Body>

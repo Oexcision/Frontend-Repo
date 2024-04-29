@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
 
     const [userDetails, setUserDetails] = useState(user);
-    const [password, setPassword] = useState('');
     const [roles, setRoles] = useState([]);
     const [selectedValue, setSelectedValue] = useState('');
 
@@ -48,18 +47,13 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
         }));
     };
 
-
-    const handleChangePassword = (e) => {
-        setPassword(e.target.value)
-    }
-
     const handleChangeSelect = (event) => {
         setSelectedValue(event.target.value);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(user.id, userDetails.username, password,)
+        console.log(user.id, userDetails.username,)
         const requestOptions = {
             method: 'PUT',
             headers: {  'Content-Type': 'application/json', 
@@ -67,9 +61,9 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
             body: JSON.stringify({
                 id: userDetails.id,
                 username: userDetails.username,
-                hashed_password: password,
                 name: userDetails.name,
                 email: userDetails.email,
+                birthday: userDetails.birthday,
                 roles: [parseInt(selectedValue)]
 
             })
@@ -115,17 +109,6 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                                 readOnly
                                 disabled />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="password">
-                            <Form.Label> Password
-                                {" "}<Badge bg="danger"> * </Badge>
-                            </Form.Label>
-                            <Form.Control
-                                type="password"
-                                placeholder="Enter Password"
-                                name="password"
-                                onChange={handleChangePassword}
-                                value={password || ""} />
-                        </Form.Group>
                         <Form.Group className="mb-3" controlId="role">
                             <Form.Label> Role
                                 {" "}<Badge bg="danger"> * </Badge>
@@ -154,6 +137,14 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                                 name="email"
                                 onChange={handleChange}
                                 value={userDetails?.email || ""} />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="birthday">
+                            <Form.Label>Birthday</Form.Label>
+                            <Form.Control
+                                type="date"
+                                name="birthday"
+                                onChange={handleChange}
+                                value={userDetails?.birthday || ""} />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="createdAt">
                             <Form.Label>Created at</Form.Label>
@@ -205,18 +196,6 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                                 readOnly
                                 disabled />
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="password">
-                            <Form.Label> Password
-                                {" "}<Badge bg="danger"> * </Badge>
-                            </Form.Label>
-                            <Form.Control
-                                type="password"
-                                placeholder="Enter Password"
-                                name="password"
-                                value={user?.hashed_password || ""}
-                                readOnly
-                                disabled />
-                        </Form.Group>
                         <Form.Group className="mb-3" controlId="role">
                             <Form.Label> Role
                                 {" "}<Badge bg="danger"> * </Badge>
@@ -247,6 +226,15 @@ const UserModal = ({ show, user, action, fetchUsers, onHide }) => {
                                 value={user?.email || ""}
                                 readOnly
                                 disabled />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="birthday">
+                            <Form.Label>Birthday</Form.Label>
+                            <Form.Control
+                                type="date"
+                                name="birthday"
+                                value={user?.birthday || ""} 
+                                readOnly
+                                disabled/>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="createdAt">
                             <Form.Label>Created at</Form.Label>

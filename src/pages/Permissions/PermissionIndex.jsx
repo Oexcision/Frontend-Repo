@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import PermissionTable from '../../components/Permissions/PermissionTable';
 import PermissionCreateModal from '../../components/Permissions/PermissionCreateModal';
 import HeaderIndex from '../../components/HeaderIndex';
+import DataTable from '../../components/DataTable';
 
 import { useAuthentication } from '../../contexts/AuthContext';
 
@@ -34,6 +34,10 @@ const PermissionIndex = () => {
             });
     };
 
+    const columnsOfTable = [{id:1, name:"id", description:"ID"},
+                            {id:2, name:"name", description:"Name"},
+                            {id:3, name:"description", description:"Description"}]
+
     return (
         <>
             <HeaderIndex 
@@ -42,9 +46,12 @@ const PermissionIndex = () => {
                 handleCreateModalShow={handleCreateModalShow}
                 permissionCreate={permissionsOfUser && permissionsOfUser.some(p => p.name === 'permission_create')?true:false}/>
 
-            <PermissionTable 
-                permissions={permissions} 
-                fetchPermissions={fetchPermissions}
+
+            <DataTable
+                columns={columnsOfTable} 
+                data={permissions} 
+                entity={{single:"Permission",plural:"permissions"}} 
+                fetchData={fetchPermissions}
                 permissionsOfUser={permissionsOfUser}/>
 
             <PermissionCreateModal 

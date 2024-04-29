@@ -13,6 +13,7 @@ import NoPage from './pages/NoPage';
 import UserIndex from './pages/Users/UserIndex'
 import PermissionIndex from "./pages/Permissions/PermissionIndex";
 import RolesIndex from "./pages/Roles/RolesIndex";
+import MeIndex from "./pages/Users/MeIndex";
 
 function App() {
   const { isLoggedIn } = useAuthentication();
@@ -27,6 +28,7 @@ function App() {
 
               <Route path='users'>
                   <Route path="list" element={<UserIndex />} />
+                  <Route path="me" element={<MeIndex />} />
               </Route>
 
               <Route path='roles'>

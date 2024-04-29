@@ -55,7 +55,7 @@ const Layout = () => {
                 <Nav.Link as={Link} to="/contact" className='hover:font-bold'>Contact</Nav.Link>
               </Nav>
               <NavDropdown title="Settings" id="basic-nav-dropdown" className='hover:font-bold'>
-                <NavDropdown.Item href="#action/3.1" className='hover:font-bold'>{user.username} Settings</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/users/me" className='hover:font-bold'>{user.username} Settings</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={handleLogout} className='hover:font-bold'>Logout</NavDropdown.Item>
               </NavDropdown>
