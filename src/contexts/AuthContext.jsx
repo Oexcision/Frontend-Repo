@@ -66,6 +66,7 @@ export const AuthProvider = ({ children }) => {
           }
          });
         //console.log(response.data.roles[0].permissions);
+        setUser( response.data )
         setPermissionsOfUser( response.data.roles[0].permissions );
     }
     catch (error) {

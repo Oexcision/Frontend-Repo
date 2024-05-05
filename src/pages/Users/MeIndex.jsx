@@ -15,6 +15,8 @@ function MeIndex(){
     const [ userDetails, setUserDetails ] = useState(user);
     const [ inputsPassword, setInputsPassword] = useState();
 
+    const [selectedFile, setSelectedFile] = useState(null);
+
     const apiUrl =
     import.meta.env.MODE === 'production'
         ? import.meta.env.VITE_REACT_APP_API_URL_PROD
@@ -36,8 +38,39 @@ function MeIndex(){
         }));
     };
 
-    const handleSubmit = (e) =>{
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+      };
+    
+      const uploadImage = async () => {
+        const formData = new FormData();
+        formData.append('image', selectedFile);
+      
+        try {
+          const response = await axios.post(`${apiUrl}/upload-image`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              'Authorization': `${localStorage.getItem('token_type')} ${localStorage.getItem('access_token')}`,
+            },
+          });
+      
+          if (response.status === 200) {
+            return response.data.imageUrl;
+          } else {
+            throw new Error('Failed to upload image');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          toast.error('Failed to upload image');
+        }
+      };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const imageUrl = await uploadImage();
+        //console.log(imageUrl)
+
         const requestOptions = {
             method: 'PUT',
             headers: {  'Content-Type': 'application/json', 
@@ -49,7 +82,7 @@ function MeIndex(){
                 name: userDetails.name,
                 email: userDetails.email,
                 birthday: userDetails.birthday,
-                image_url: userDetails.image_url,
+                image_url: imageUrl,
                 roles: [user.roles[0].id]
 
             })
@@ -61,10 +94,7 @@ function MeIndex(){
             axios.put(apiUrl + `/users/${user.id}`, requestOptions.body, { headers: requestOptions.headers })
             .then(response => {
                 if (response.status === 200) {
-                    // Aquí podrías realizar alguna acción adicional después de guardar los cambios, como cerrar el modal
-                    //onHide();
                     toast.success('User edit successfully');
-                    //fetchUsers();
                 } else {
                     throw new Error('Failed to save changes');
                 }
@@ -183,14 +213,18 @@ function MeIndex(){
                         <Row  className="mb-3">
                             <Col md="3"/>
                             <Col md="5">
-                                <Image src="https://via.placeholder.com/200" roundedCircle />
+                                {userDetails.image_url ? (
+                                    <Image src={userDetails.image_url} roundedCircle />
+                                ) : (
+                                    <Image src="https://via.placeholder.com/200" roundedCircle />
+                                )}
                             </Col>
                             <Col md="3"/>
                         </Row>
                         <Row  className="mb-3">
                             <Form.Group controlId="formFile" >
                                 <Form.Label>Select an image</Form.Label>
-                                <Form.Control type="file"/>
+                                <Form.Control type="file" onChange={handleFileChange}/>
                             </Form.Group>
                         </Row>
                     </Col>
