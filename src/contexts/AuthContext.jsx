@@ -66,7 +66,8 @@ export const AuthProvider = ({ children }) => {
           }
          });
         //console.log(response.data.roles[0].permissions);
-        setUser( response.data )
+        setUser( response.data );
+        localStorage.setItem("user", JSON.stringify( response.data ));
         setPermissionsOfUser( response.data.roles[0].permissions );
     }
     catch (error) {

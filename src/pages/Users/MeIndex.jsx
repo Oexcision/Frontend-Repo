@@ -13,9 +13,11 @@ function MeIndex(){
     const { user } = useAuthentication();
 
     const [ userDetails, setUserDetails ] = useState(user);
-    const [ inputsPassword, setInputsPassword] = useState();
+    const [ inputsPassword, setInputsPassword ] = useState();
 
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [ selectedFile, setSelectedFile ] = useState(null);
+    
+    const [ previewImageUrl, setPreviewImageUrl ] = useState(null); // Nuevo estado para la URL temporal de la imagen seleccionada
 
     const apiUrl =
     import.meta.env.MODE === 'production'
@@ -40,6 +42,9 @@ function MeIndex(){
 
     const handleFileChange = (event) => {
         setSelectedFile(event.target.files[0]);
+
+        const temporaryImageUrl = URL.createObjectURL(event.target.files[0]);
+        setPreviewImageUrl(temporaryImageUrl);
       };
     
       const uploadImage = async () => {
@@ -68,28 +73,33 @@ function MeIndex(){
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const imageUrl = await uploadImage();
-        //console.log(imageUrl)
+        if( inputsPassword &&
+            inputsPassword.password &&
+            inputsPassword.confirmPassword &&
+            inputsPassword.password === inputsPassword.confirmPassword){
 
-        const requestOptions = {
-            method: 'PUT',
-            headers: {  'Content-Type': 'application/json', 
-                        'Authorization': localStorage.getItem("token_type") + " " + localStorage.getItem("access_token") },
-            body: JSON.stringify({
-                id: userDetails.id,
-                username: userDetails.username,
-                hashed_password: inputsPassword.password,
-                name: userDetails.name,
-                email: userDetails.email,
-                birthday: userDetails.birthday,
-                image_url: imageUrl,
-                roles: [user.roles[0].id]
-
-            })
-        };
-
-        if(inputsPassword.password == inputsPassword.confirmPassword){
             console.log(inputsPassword.password, userDetails);
+
+            const imageUrl = await uploadImage();
+            //console.log(imageUrl)
+    
+            const requestOptions = {
+                method: 'PUT',
+                headers: {  'Content-Type': 'application/json', 
+                            'Authorization': localStorage.getItem("token_type") + " " + localStorage.getItem("access_token") },
+                body: JSON.stringify({
+                    id: userDetails.id,
+                    username: userDetails.username,
+                    hashed_password: inputsPassword.password,
+                    name: userDetails.name,
+                    email: userDetails.email,
+                    birthday: userDetails.birthday,
+                    image_url: imageUrl,
+                    roles: [user.roles[0].id]
+    
+                })
+            };
+
 
             axios.put(apiUrl + `/users/${user.id}`, requestOptions.body, { headers: requestOptions.headers })
             .then(response => {
@@ -213,10 +223,10 @@ function MeIndex(){
                         <Row  className="mb-3">
                             <Col md="3"/>
                             <Col md="5">
-                                {userDetails.image_url ? (
-                                    <Image src={userDetails.image_url} roundedCircle />
+                                {previewImageUrl ? (
+                                    <Image src={previewImageUrl} roundedCircle />
                                 ) : (
-                                    <Image src="https://via.placeholder.com/200" roundedCircle />
+                                    <Image src={userDetails.image_url || "https://via.placeholder.com/200"} roundedCircle />
                                 )}
                             </Col>
                             <Col md="3"/>
